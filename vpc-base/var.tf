@@ -29,3 +29,7 @@ variable "public_subnet_a_cidr" {
 variable "public_subnet_b_cidr" {
   default = "10.0.12.0/24"
 }
+
+variable "aws_region" {
+  default = "us-east-1"
+}
