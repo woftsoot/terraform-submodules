@@ -2,12 +2,19 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-resource "aws_instance" "test-instance" {
+resource "aws_instance" "simple-dev-instance" {
   instance_type = "${var.instance_type}"
   availability_zone = "${var.instance_az}"
   ami = "${data.aws_ami.amzn_ami_lookup.id}"
   vpc_security_group_ids = ["${aws_security_group.remote-access.id}"]
   associate_public_ip_address = "${var.public_ip_boolean}"
+  subnet_id = "${var.subnet_id}"
+  key_name = "${aws_key_pair.simple-key-pair.key_name}"
+}
+
+resource "aws_key_pair" "simple-key-pair" {
+  key_name = "${var.pub-ssh-name}"
+  public_key = "${file("${var.pub-ssh-file}")}"
 }
 
 #~~~~~~~~~~~~~~~~~~~~~
@@ -16,7 +23,7 @@ resource "aws_instance" "test-instance" {
 
 resource "aws_security_group" "remote-access" {
   name = "remote-access-sg"
-//vpc_id = "${aws_vpc.main_vpc.id}"
+  vpc_id = "${var.vpc_id}"
 }
 
 resource "aws_security_group_rule" "ssh_ingress" {

@@ -18,6 +18,39 @@ variable "instance_type" {
 }
 
 variable "remote_access_ip" {
-  description = "WARNING: SET TO 0.0.0.0/0. CHANGE BEFORE USE. Allows remote ssh access to appropriate host."
+  description = "WARNING: SET TO 0.0.0.0/0. CHANGE BEFORE USE OR EXPLICITLY CHANGE IN MODULE CALL. Allows remote ssh access to appropriate host."
   default = "0.0.0.0/0"
+}
+
+variable "subnet_id" {
+  description = "Subnet ID to build in"
+}
+
+variable "vpc_id" {
+  description = "VPC ID to build in"
+}
+
+variable "pub-ssh-name" {
+  description = "AWS Pub Key Name"
+  default = ""
+}
+
+variable "pub-ssh-file" {
+  description = "Public key file path"
+  default = ""
+}
+
+variable "priv-ssh-file" {
+  description = "Private key file path for provisioner"
+  default = ""
+}
+
+variable "provisioner_source" {
+  description = "Source artifact directory"
+  default = ""
+}
+
+variable "provisioner_destination" {
+  description = "Destination artifact directory"
+  default = ""
 }

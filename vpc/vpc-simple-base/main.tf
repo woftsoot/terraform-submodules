@@ -41,6 +41,12 @@ resource "aws_internet_gateway" "simple_igw" {
 }
 
 #~~~~~~~~~~~
+#Commented out because NAT Gateway and EIP aren't in free tier :X
+#Uncomment if wanted in module
+#~~~~~~~~~~~
+
+/*
+#~~~~~~~~~~~
 #EIP
 #~~~~~~~~~~~
 
@@ -63,7 +69,7 @@ resource "aws_nat_gateway" "simple_nat_gateway" {
     Name = "Simple Gateway NAT"
   }
 }
-
+*/
 #~~~~~~~~~~
 #VPC Route Table and Associations
 #~~~~~~~~~~
