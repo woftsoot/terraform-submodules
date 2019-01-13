@@ -54,3 +54,8 @@ variable "provisioner_destination" {
   description = "Destination artifact directory"
   default = ""
 }
+
+variable "iam_profile" {
+  description = "iam role to pass to ec2 instance"
+  default = ""
+}

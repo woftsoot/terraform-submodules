@@ -10,6 +10,7 @@ resource "aws_instance" "simple-dev-instance" {
   associate_public_ip_address = "${var.public_ip_boolean}"
   subnet_id = "${var.subnet_id}"
   key_name = "${aws_key_pair.simple-key-pair.key_name}"
+  iam_instance_profile = "${var.iam_profile}"
 }
 
 resource "aws_key_pair" "simple-key-pair" {
