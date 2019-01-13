@@ -59,3 +59,13 @@ variable "iam_profile" {
   description = "iam role to pass to ec2 instance"
   default = ""
 }
+
+variable "simple_ec2_count" {
+  description = "Count of ec2 instances to spin up"
+  default = 1
+}
+
+variable "instance_function_name" {
+  description = "List of instance functions for naming purposes"
+  default = []
+}

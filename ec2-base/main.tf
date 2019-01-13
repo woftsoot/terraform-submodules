@@ -3,6 +3,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "simple-dev-instance" {
+  count = "${var.simple_ec2_count}"
   instance_type = "${var.instance_type}"
   availability_zone = "${var.instance_az}"
   ami = "${data.aws_ami.amzn_ami_lookup.id}"
@@ -11,6 +12,10 @@ resource "aws_instance" "simple-dev-instance" {
   subnet_id = "${var.subnet_id}"
   key_name = "${aws_key_pair.simple-key-pair.key_name}"
   iam_instance_profile = "${var.iam_profile}"
+
+  tags {
+    Name = "${element(var.instance_function_name, count.index)}"
+  }
 }
 
 resource "aws_key_pair" "simple-key-pair" {
