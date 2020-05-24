@@ -29,7 +29,7 @@ variable "subnet_id" {
 variable "vpc_id" {
   description = "VPC ID to build in"
 }
-
+/*
 variable "pub-ssh-name" {
   description = "AWS Pub Key Name"
   default = ""
@@ -39,7 +39,12 @@ variable "pub-ssh-file" {
   description = "Public key file path"
   default = ""
 }
+*/
 
+variable "key-name" {
+  description = "Key to use for instance access"
+  default = "terraform"
+}
 variable "priv-ssh-file" {
   description = "Private key file path for provisioner"
   default = ""
@@ -62,10 +67,10 @@ variable "iam_profile" {
 
 variable "simple_ec2_count" {
   description = "Count of ec2 instances to spin up"
-  default = 1
+  default = 2
 }
 
 variable "instance_function_name" {
   description = "List of instance functions for naming purposes"
-  default = []
+  default = ["test-instance-"]
 }
