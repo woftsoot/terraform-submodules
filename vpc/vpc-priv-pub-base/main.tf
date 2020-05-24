@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "${var.aws_region}"
+  region = var.aws_region
 }
 
 #~~~~~~~~~~~
@@ -7,9 +7,9 @@ provider "aws" {
 #~~~~~~~~~~~
 
 resource "aws_vpc" "main_vpc" {
-  cidr_block = "${var.vpc_cidr}"
+  cidr_block = var.vpc_cidr
 
-  tags {
+  tags = {
     Name = "Primary VPC"
   }
 }
@@ -19,41 +19,41 @@ resource "aws_vpc" "main_vpc" {
 #2 Pub, 2 Priv
 #~~~~~~~~~~~
 resource "aws_subnet" "public_subnet_a" {
-  vpc_id = "${aws_vpc.main_vpc.id}"
-  cidr_block = "${var.public_subnet_a_cidr}"
-  availability_zone = "${var.sub_a_region}"
+  vpc_id = aws_vpc.main_vpc.id
+  cidr_block = var.public_subnet_a_cidr
+  availability_zone = var.sub_a_region
 
-  tags {
+  tags = {
     Name = "Public Subnet A"
   }
 }
 
 resource "aws_subnet" "public_subnet_b" {
-  vpc_id = "${aws_vpc.main_vpc.id}"
-  cidr_block = "${var.public_subnet_b_cidr}"
-  availability_zone = "${var.sub_b_region}"
+  vpc_id = aws_vpc.main_vpc.id
+  cidr_block = var.public_subnet_b_cidr
+  availability_zone = var.sub_b_region
 
-  tags {
+  tags = {
     Name = "Public Subnet B"
   }
 }
 
 resource "aws_subnet" "private_subnet_a" {
-  vpc_id = "${aws_vpc.main_vpc.id}"
-  cidr_block = "${var.private_subnet_a_cidr}"
-  availability_zone = "${var.sub_a_region}"
+  vpc_id = aws_vpc.main_vpc.id
+  cidr_block = var.private_subnet_a_cidr
+  availability_zone = var.sub_a_region
 
-  tags {
+  tags = {
     Name = "Private Subnet A"
   }
 }
 
 resource "aws_subnet" "private_subnet_b" {
-  vpc_id = "${aws_vpc.main_vpc.id}"
-  cidr_block = "${var.private_subnet_b_cidr}"
-  availability_zone = "${var.sub_b_region}"
+  vpc_id = aws_vpc.main_vpc.id
+  cidr_block = var.private_subnet_b_cidr
+  availability_zone = var.sub_b_region
 
-  tags {
+  tags = {
     Name = "Private Subnet B"
   }
 }
@@ -63,7 +63,7 @@ resource "aws_subnet" "private_subnet_b" {
 #~~~~~~~~~~~
 
 resource "aws_internet_gateway" "vpc_igw" {
-  vpc_id = "${aws_vpc.main_vpc.id}"
+  vpc_id = aws_vpc.main_vpc.id
 
   tags = {
     Name = "main"
@@ -76,12 +76,12 @@ resource "aws_internet_gateway" "vpc_igw" {
 
 resource "aws_eip" "pub_sub_a_nat_eip" {
   vpc = false
-  depends_on = ["aws_internet_gateway.vpc_igw"]
+  depends_on = [aws_internet_gateway.vpc_igw]
 }
 
 resource "aws_eip" "pub_sub_b_nat_eip" {
   vpc = false
-  depends_on = ["aws_internet_gateway.vpc_igw"]
+  depends_on = [aws_internet_gateway.vpc_igw]
 }
 
 #~~~~~~~~~~~
@@ -89,10 +89,10 @@ resource "aws_eip" "pub_sub_b_nat_eip" {
 #~~~~~~~~~~~
 
 resource "aws_nat_gateway" "pub_sub_a_nat_gateway" {
-  allocation_id = "${aws_eip.pub_sub_a_nat_eip.id}"
-  subnet_id = "${aws_subnet.public_subnet_a.id}"
+  allocation_id = aws_eip.pub_sub_a_nat_eip.id
+  subnet_id = aws_subnet.public_subnet_a.id
 
-  depends_on = ["aws_internet_gateway.vpc_igw"]
+  depends_on = [aws_internet_gateway.vpc_igw]
 
   tags = {
     Name = "Public Subnet A NAT"
@@ -100,10 +100,10 @@ resource "aws_nat_gateway" "pub_sub_a_nat_gateway" {
 }
 
 resource "aws_nat_gateway" "pub_sub_b_nat_gateway" {
-  allocation_id = "${aws_eip.pub_sub_b_nat_eip.id}"
-  subnet_id = "${aws_subnet.public_subnet_b.id}"
+  allocation_id = aws_eip.pub_sub_b_nat_eip.id
+  subnet_id = aws_subnet.public_subnet_b.id
 
-  depends_on = ["aws_internet_gateway.vpc_igw"]
+  depends_on = [aws_internet_gateway.vpc_igw]
 
   tags = {
     Name = "Public Subnet B NAT"
@@ -115,9 +115,9 @@ resource "aws_nat_gateway" "pub_sub_b_nat_gateway" {
 #~~~~~~~~~~
 
 resource "aws_route" "igw_route" {
-  route_table_id = "${aws_vpc.main_vpc.main_route_table_id}"
+  route_table_id = aws_vpc.main_vpc.main_route_table_id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = "${aws_internet_gateway.vpc_igw.id}"
+  gateway_id = aws_internet_gateway.vpc_igw.id
 }
 
 #~~~~~~~~~~
@@ -125,18 +125,18 @@ resource "aws_route" "igw_route" {
 #~~~~~~~~~~
 
 resource "aws_route_table" "priv_pub_table_a" {
-  vpc_id = "${aws_vpc.main_vpc.id}"
+  vpc_id = aws_vpc.main_vpc.id
 }
 
 resource "aws_route" "priv_pub_route_a" {
-  route_table_id = "${aws_route_table.priv_pub_table_a.id}"
+  route_table_id = aws_route_table.priv_pub_table_a.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = "${aws_nat_gateway.pub_sub_a_nat_gateway.id}"
+  nat_gateway_id = aws_nat_gateway.pub_sub_a_nat_gateway.id
 }
 
 resource "aws_route_table_association" "subnet_table_a" {
-  subnet_id = "${aws_subnet.private_subnet_a.id}"
-  route_table_id = "${aws_route_table.priv_pub_table_a.id}"
+  subnet_id = aws_subnet.private_subnet_a.id
+  route_table_id = aws_route_table.priv_pub_table_a.id
 }
 
 #~~~~~~~~~~
@@ -144,16 +144,16 @@ resource "aws_route_table_association" "subnet_table_a" {
 #~~~~~~~~~~
 
 resource "aws_route_table" "priv_pub_table_b" {
-  vpc_id = "${aws_vpc.main_vpc.id}"
+  vpc_id = aws_vpc.main_vpc.id
 }
 
 resource "aws_route" "priv_pub_route_b" {
-  route_table_id = "${aws_route_table.priv_pub_table_b.id}"
+  route_table_id = aws_route_table.priv_pub_table_b.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = "${aws_nat_gateway.pub_sub_b_nat_gateway.id}"
+  nat_gateway_id = aws_nat_gateway.pub_sub_b_nat_gateway.id
 }
 
 resource "aws_route_table_association" "subnet_table_b" {
-  subnet_id = "${aws_subnet.private_subnet_b.id}"
-  route_table_id = "${aws_route_table.priv_pub_table_b.id}"
+  subnet_id = aws_subnet.private_subnet_b.id
+  route_table_id = aws_route_table.priv_pub_table_b.id
 }
